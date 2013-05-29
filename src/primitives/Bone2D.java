@@ -24,7 +24,7 @@ public class Bone2D {
 		this.child.add(child);
 	}
 	
-	public Point getPoint(){
+	public Point getJoint(){
 		return new Point(x, y);
 	}
 
@@ -52,5 +52,8 @@ public class Bone2D {
 		return parent;
 	}
 	
+	public void move(double x, double y){
+		
+	}
 	
 }

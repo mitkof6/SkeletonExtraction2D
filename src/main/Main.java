@@ -26,13 +26,11 @@ public class Main {
      */
     public static void main(String[] args) {
     	
-		@SuppressWarnings("unused")
 		Window application = new Window();
+		application.setVisible(true);
 
     }
-    
-    
-    
+
     public static void generateSceleton(String path, int zoom, double step, int sampling,
     		int pushingFactor, int iteration, int distanceTolerance, int rootTolerance)
     				throws FileNotFoundException{

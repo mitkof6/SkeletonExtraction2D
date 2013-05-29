@@ -29,10 +29,10 @@ public class BoneSystem {
 		Stack<Segment> toRemove = new Stack<>();
 		while(segments.size()!=0){
 			for(Segment s : segments){
-				if(s.getLeft().equals(current.getPoint())){
+				if(s.getLeft().equals(current.getJoint())){
 					makeBone(current, s.getRight());
 					toRemove.add(s);
-				}else if(s.getRight().equals(current.getPoint())){
+				}else if(s.getRight().equals(current.getJoint())){
 					makeBone(current, s.getLeft());
 					toRemove.push(s);
 				}
@@ -40,7 +40,8 @@ public class BoneSystem {
 			while(!toRemove.empty()){
 				segments.remove(toRemove.pop());
 			}
-			current = bonesStack.pop();
+			if(!bonesStack.isEmpty()) current = bonesStack.pop();
+			
 		}
 		
 	}
@@ -49,9 +50,9 @@ public class BoneSystem {
 		double a;
 		double l;
 		
-		l = parent.getPoint().dist(p);
+		l = parent.getJoint().dist(p);
 		
-		a = new Line(parent.getPoint(), p).getAngle();
+		a = new Line(parent.getJoint(), p).getAngle();
 		
 		//child
 		Bone2D child = new Bone2D(p.getX(), p.getY(), a, l, parent);

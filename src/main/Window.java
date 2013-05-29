@@ -17,6 +17,7 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 
+import animation.Animation2D;
 import animation.AnimationWindow;
 
 /**
@@ -29,12 +30,12 @@ public class Window extends JFrame{//
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private static final int height = 700, width = 700;
+	private static final int HEIGTH = 700, WIDTH = 700;
     
     public Window(){
         super("Model");
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setBounds(10, 10, width, height);
+        this.setBounds(10, 10, WIDTH, HEIGTH);
         
         this.setLayout(new BorderLayout());
        
@@ -71,6 +72,7 @@ public class Window extends JFrame{//
 					//TODO
 				}
 				panel.render();
+				repaint();
 			}
 		});
         
@@ -110,10 +112,10 @@ public class Window extends JFrame{//
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(Main.skeleton==null) return;
-				AnimationWindow animationWindow = new AnimationWindow();
-				animationWindow.setBounds(500, 20, width, height);
 				Main.generateBoneSystem();
-				animationWindow.panel.render();
+				Animation2D animator = new Animation2D(Main.boneSystem.getRoot());
+				animator.setBounds(100, 20, WIDTH, HEIGTH);
+				animator.setVisible(true);
 			}
 		});
         animationToolBar.add(animateB);
@@ -121,7 +123,7 @@ public class Window extends JFrame{//
         this.add(panel, BorderLayout.CENTER);
         this.add(modelToolBar, BorderLayout.NORTH);
         this.add(animationToolBar, BorderLayout.SOUTH);
-        this.setVisible(true);
+        
     }
     
     private JComponent createVerticalSeparator() {  
