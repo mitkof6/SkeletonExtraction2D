@@ -167,11 +167,11 @@ public class Vector2D {
         if (i == 0)
             biClose = Other.i == 0;
         else
-            biClose = Math.abs((Other.i - i) / i) < 0.0001;
+            biClose = Math.abs((Other.i - i) / i) < 0.00001;
         if (j == 0)
             bjClose = Other.j == 0;
         else
-            bjClose = Math.abs((Other.j - j) / j) <  0.0001;
+            bjClose = Math.abs((Other.j - j) / j) <  0.00001;
 
         return (biClose && bjClose);
     }
@@ -180,7 +180,13 @@ public class Vector2D {
     public double angleBetween(Vector2D Other)
     {
         double dDot = this.dot(Other);
-        dDot /= (this.getLength() * Other.getLength());
+        dDot = dDot/(this.getLength() * Other.getLength());
+        //System.out.println(dDot+"-> "+Math.acos(dDot));
+        if(dDot>1.0){
+        	dDot = 1.0;
+        }else if(dDot<-1.0){
+        	dDot = -1.0;
+        }
         return Math.acos(dDot);
     }
     

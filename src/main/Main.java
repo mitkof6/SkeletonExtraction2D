@@ -48,8 +48,9 @@ public class Main {
     }
     
     public static void generateBoneSystem(){
-   	
+    	
     	boneSystem = new BoneSystem(skeleton.getRoot().get(0), skeleton.getBones());
     	boneSystem.generateBoneSystem();
+    	boneSystem.printBones(boneSystem.getRoot(), 1);
     }
 }

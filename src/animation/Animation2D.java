@@ -153,6 +153,8 @@ public class Animation2D extends Frame implements GLEventListener, KeyListener{
 
 	private void drawBone(Bone2D bone, GL2 gl){
 		gl.glPushMatrix();
+		
+		/*
 		gl.glBegin(GL2.GL_LINE_LOOP);
 		gl.glColor3f(1, 0, 0);
 		gl.glVertex2d(bone.getX(), bone.getY());
@@ -160,20 +162,20 @@ public class Animation2D extends Frame implements GLEventListener, KeyListener{
 		if(bone.getParent()!=null) gl.glVertex2d(bone.getParent().getX(),
 				bone.getParent().getY());
 		gl.glEnd();
-
-		/*
-		 gl.glPushMatrix();
-
-		 gl.glTranslated(bone.getX(), bone.getY(), 0);
-		 gl.glRotated(bone.getA(), 0, 0, 1);
-
-		 gl.glBegin(GL2.GL_LINE_LOOP);
-		 gl.glColor3f(1, 0, 0);
-		 gl.glVertex2d(0, 0);
-		 gl.glColor3f(0, 1, 0);
-		 gl.glVertex2d(bone.getL(), 0);
-		 gl.glEnd();
-		 */
+		*/
+		
+		gl.glTranslated(0, 0, 0);
+		gl.glRotated(Math.toDegrees(bone.getA()), 0, 0, 1);
+		
+		gl.glColor3f(1, 0, 0);
+		
+		gl.glBegin(GL2.GL_LINE_LOOP);
+		
+		gl.glVertex2d(0, 0);
+		gl.glVertex2d(bone.getL(), 0);
+		gl.glEnd();
+		gl.glTranslated(bone.getL(), 0, 0);
+		
 		for(Bone2D child : bone.getChild()){
 			drawBone(child, gl);
 		}

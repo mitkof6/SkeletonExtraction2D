@@ -7,6 +7,7 @@ import primitives.Bone2D;
 import primitives.Line;
 import primitives.Point;
 import primitives.Segment;
+import primitives.Vector2D;
 
 public class BoneSystem {
 
@@ -52,7 +53,24 @@ public class BoneSystem {
 		
 		l = parent.getJoint().dist(p);
 		
-		a = new Line(parent.getJoint(), p).getAngle();
+		//a = (new Line(parent.getJoint(), p).getAngle()) - parent.getA();
+		if(parent.getParent()!=null){
+			Vector2D v1 = new Vector2D(parent.getParent().getJoint(),
+					parent.getJoint());
+			Vector2D v2 = new Vector2D(parent.getJoint(), p);
+			a = v1.angleBetween(v2);
+			int sign = v1.cross(v2)< 0 ? -1 : 1;
+			a = a*sign;
+		}else{
+			//a = (new Line(parent.getJoint(), p).getAngle()) - parent.getA();
+			Vector2D v1 = new Vector2D(new Point(0,0), new Point(100, 0));
+			Vector2D v2 = new Vector2D(parent.getJoint(), p);
+			a = v1.angleBetween(v2);
+			int sign = v1.cross(v2)< 0 ? -1 : 1;
+			a = a*sign;
+		}
+		
+		
 		
 		//child
 		Bone2D child = new Bone2D(p.getX(), p.getY(), a, l, parent);
@@ -63,6 +81,19 @@ public class BoneSystem {
 
 	}
 	
+	public void printBones(Bone2D bone, int level){
+		for(int i = 0;i<level;i++){
+			System.out.print("#");
+		}
+		
+		//System.out.println(" "+bone.getX()+" "+bone.getX()+" "+bone.getA()+" "+
+				//bone.getL());
+		System.out.println(" "+0+" "+0+" "+bone.getA()+" "+bone.getL()+" "+Math.toDegrees(bone.getA()));
+				
+		for(Bone2D child : bone.getChild()){
+			printBones(child, level+1);
+		}
+	}
 	public Bone2D getRoot(){
 		return this.rootBS;
 	}

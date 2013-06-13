@@ -314,7 +314,8 @@ public class Skeleton2D {
 		
 		for(Point g: pointList){
 			if(g.equals(p)){
-				break;
+				return;
+				//break;
 			}
 		}
 		pointList.add(p);
@@ -328,7 +329,9 @@ public class Skeleton2D {
 	private void skeletonChainUnion(){
 		
 		while(root.size()>1){
+			
 			ArrayList<Point> result = ClosestPair.Naive(root);
+			
 			bones.add(new Segment(result.get(0), result.get(1)));
 			root.remove(result.get(0));
 		}

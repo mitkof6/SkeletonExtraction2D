@@ -18,7 +18,6 @@ import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 
 import animation.Animation2D;
-import animation.AnimationWindow;
 
 /**
  *
@@ -39,7 +38,7 @@ public class Window extends JFrame{//
         
         this.setLayout(new BorderLayout());
        
-        final JTextField pathTF = new JTextField("Model_2d_test.poly", 25);
+        final JTextField pathTF = new JTextField("cube", 25);//Model_2d_test.poly
         final JTextField zoomTF = new JTextField("2", 3);
         final JTextField stepTF = new JTextField("1", 3);
         final JTextField samplingTF = new JTextField("20", 3);
