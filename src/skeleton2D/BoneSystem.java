@@ -30,6 +30,7 @@ public class BoneSystem {
 		Stack<Segment> toRemove = new Stack<>();
 		while(segments.size()!=0){
 			for(Segment s : segments){
+				//if(s.getLeft().equals(s.getRight())) continue;
 				if(s.getLeft().equals(current.getJoint())){
 					makeBone(current, s.getRight());
 					toRemove.add(s);
