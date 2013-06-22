@@ -18,7 +18,7 @@ public class Bone2D {
 		this.l = l;
 		this.parent = parent;
 		this.name = name;
-		
+		System.out.println("Name: "+name+"angle: "+a);
 		child = new ArrayList<>();
 	}
 	

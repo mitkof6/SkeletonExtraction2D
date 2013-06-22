@@ -62,6 +62,10 @@ public class Animation2D extends Frame implements GLEventListener, KeyListener{
 
 		this.rootBS = rootBS;
 		this.edges = Main.edges;
+		System.out.println("Size: "+edges.size());
+		
+		X = (int)rootBS.getX();
+		Y = (int)rootBS.getY();
 		
 		//intialization
 		glp =  GLProfile.getDefault();
@@ -132,9 +136,6 @@ public class Animation2D extends Frame implements GLEventListener, KeyListener{
 
 	}
 
-	private void update() {
-
-	}
 
 	private void render(GLAutoDrawable drawable) {
 
@@ -165,12 +166,14 @@ public class Animation2D extends Frame implements GLEventListener, KeyListener{
 		gl.glPushMatrix();
 		
 		gl.glColor3d(0, 1, 0);
-		gl.glBegin(GL2.GL_LINE_LOOP);
+		
 		for(Segment s: edges){
+			gl.glBegin(GL2.GL_LINE_LOOP);
 			gl.glVertex2d(s.getLeft().getX(), s.getLeft().getY());
 			gl.glVertex2d(s.getRight().getX(), s.getRight().getY());
+			gl.glEnd();
 		}
-		gl.glEnd();
+		
 		gl.glPopMatrix();
 	}
 	private void drawBone(Bone2D bone, GL2 gl){

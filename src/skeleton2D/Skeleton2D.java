@@ -350,7 +350,7 @@ public class Skeleton2D {
 			addPointTo(new Segment(arrayRoot[e.v()], arrayRoot[e.w()]), bones);
 		}
 		
-		System.out.println(root.get(0).getX()+" "+root.get(0).getY());
+		//System.out.println(root.get(0).getX()+" "+root.get(0).getY());
 		
 	}
 	

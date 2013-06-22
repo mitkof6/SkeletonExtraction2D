@@ -88,9 +88,13 @@ public class BoneSystem {
 			System.out.print("#");
 		}
 		
-		//System.out.println(" "+bone.getX()+" "+bone.getX()+" "+bone.getA()+" "+
-				//bone.getL());
-		System.out.println(" "+0+" "+0+" "+bone.getA()+" "+bone.getL()+" "+bone.getName());
+		if(level==1){
+			System.out.println(" "+bone.getX()+" "+bone.getY()+" "+bone.getA()+
+					" "+bone.getL()+" "+bone.getName());
+		}else{
+			System.out.println(" "+0+" "+0+" "+bone.getA()+" "+bone.getL()+" "+bone.getName());
+		}
+		
 				
 		for(Bone2D child : bone.getChild()){
 			printBones(child, level+1);
