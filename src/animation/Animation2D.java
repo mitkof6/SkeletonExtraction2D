@@ -5,6 +5,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
@@ -14,7 +15,10 @@ import javax.media.opengl.GLProfile;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
 
+import main.Main;
+
 import primitives.Bone2D;
+import primitives.Segment;
 
 
 import com.jogamp.opengl.util.FPSAnimator;
@@ -36,6 +40,7 @@ public class Animation2D extends Frame implements GLEventListener, KeyListener{
 	private GL2 gl;
 
 	private Bone2D rootBS;
+	ArrayList<Segment> edges;
 	private boolean updateFlag = false;
 	private int DISTANCE = 1000, X = 0, Y = 0;
 
@@ -56,7 +61,8 @@ public class Animation2D extends Frame implements GLEventListener, KeyListener{
 		});
 
 		this.rootBS = rootBS;
-
+		this.edges = Main.edges;
+		
 		//intialization
 		glp =  GLProfile.getDefault();
 		GLProfile.initSingleton();
@@ -143,7 +149,11 @@ public class Animation2D extends Frame implements GLEventListener, KeyListener{
 			updateFlag = false;
 			gl.glViewport(X, Y, 1000, 1000);
 		}
+		
+		gl.glTranslated(rootBS.getX(), rootBS.getY(), 0);
 
+		drawSkin(gl);
+		
 		// draw
 		drawBone(rootBS, gl);
 
@@ -151,6 +161,18 @@ public class Animation2D extends Frame implements GLEventListener, KeyListener{
 
 	}
 
+	private void drawSkin(GL2 gl){
+		gl.glPushMatrix();
+		
+		gl.glColor3d(0, 1, 0);
+		gl.glBegin(GL2.GL_LINE_LOOP);
+		for(Segment s: edges){
+			gl.glVertex2d(s.getLeft().getX(), s.getLeft().getY());
+			gl.glVertex2d(s.getRight().getX(), s.getRight().getY());
+		}
+		gl.glEnd();
+		gl.glPopMatrix();
+	}
 	private void drawBone(Bone2D bone, GL2 gl){
 		gl.glPushMatrix();
 		
@@ -164,8 +186,16 @@ public class Animation2D extends Frame implements GLEventListener, KeyListener{
 		gl.glEnd();
 		*/
 		
-		gl.glTranslated(0, 0, 0);
+		if(bone.getParent()==null){
+			gl.glTranslated(bone.getX(), bone.getY(), 0);
+		}else{
+			gl.glTranslated(0, 0, 0);
+		}
+		
+
 		gl.glRotated(Math.toDegrees(bone.getA()), 0, 0, 1);
+		
+		
 		
 		gl.glColor3f(1, 0, 0);
 		

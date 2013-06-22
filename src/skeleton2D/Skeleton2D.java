@@ -2,7 +2,10 @@ package skeleton2D;
 
 import java.util.ArrayList;
 
-import primitives.ClosestPair;
+import mst.Edge;
+import mst.EdgeWeightedGraph;
+import mst.KruskalMST;
+
 import primitives.Line;
 import primitives.Point;
 import primitives.Segment;
@@ -286,7 +289,7 @@ public class Skeleton2D {
 			if(nearest.equals(points.get(i))){
 				
 				addPointTo(previous, joints);
-				bones.add(new Segment(previous, nearest));
+				addPointTo(new Segment(previous, nearest),bones);
 				previous = new Point(nearest.getX(), nearest.getY());
 				count++;
 			}else{
@@ -294,7 +297,7 @@ public class Skeleton2D {
 				if(!previous.equals(points.get(0))){
 					
 					addPointTo(previous, joints);
-					bones.add(new Segment(previous, nearest));
+					addPointTo(new Segment(previous, nearest),bones);
 					if(count>rootTolerance){
 						addPointTo(nearest, root);
 					}
@@ -306,13 +309,14 @@ public class Skeleton2D {
 	
 	/**
 	 * Adds the point if not in list
+	 * @param <T>
 	 * 
 	 * @param p point to add
 	 * @param pointList list to check
 	 */
-	private void addPointTo(Point p, ArrayList<Point> pointList){
+	private <T> void addPointTo(T p, ArrayList<T> pointList){
 		
-		for(Point g: pointList){
+		for(T g: pointList){
 			if(g.equals(p)){
 				return;
 				//break;
@@ -328,13 +332,26 @@ public class Skeleton2D {
 	 */
 	private void skeletonChainUnion(){
 		
-		while(root.size()>1){
-			
-			ArrayList<Point> result = ClosestPair.Naive(root);
-			
-			bones.add(new Segment(result.get(0), result.get(1)));
-			root.remove(result.get(0));
+		EdgeWeightedGraph G = new EdgeWeightedGraph(root.size());
+		Point[] arrayRoot = new Point[root.size()];
+		root.toArray(arrayRoot);
+		
+		for(int i = 0;i<arrayRoot.length;i++){
+			for(int j = 0;j<arrayRoot.length;j++){
+				if(arrayRoot[i].equals(arrayRoot[j])) continue;
+				
+				G.addEdge(new Edge(i, j, arrayRoot[i].dist(arrayRoot[j])));
+			}
 		}
+		
+		KruskalMST mst = new KruskalMST(G);
+		
+		for(Edge e: mst.edges()){
+			addPointTo(new Segment(arrayRoot[e.v()], arrayRoot[e.w()]), bones);
+		}
+		
+		System.out.println(root.get(0).getX()+" "+root.get(0).getY());
+		
 	}
 	
 	/**

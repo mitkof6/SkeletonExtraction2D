@@ -9,13 +9,15 @@ public class Bone2D {
 								//l length of the bone
 	private ArrayList<Bone2D> child;
 	private Bone2D parent;
+	private int name;
 	
-	public Bone2D(double x, double y, double a, double l, Bone2D parent){
+	public Bone2D(double x, double y, double a, double l, Bone2D parent, int name){
 		this.x = x;
 		this.y = y;
 		this.a = a;
 		this.l = l;
 		this.parent = parent;
+		this.name = name;
 		
 		child = new ArrayList<>();
 	}
@@ -52,8 +54,8 @@ public class Bone2D {
 		return parent;
 	}
 	
-	public void move(double x, double y){
-		
+	public int getName(){
+		return this.name;
 	}
 	
 }

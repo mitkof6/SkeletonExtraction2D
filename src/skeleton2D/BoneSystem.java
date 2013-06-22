@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 import primitives.Bone2D;
-import primitives.Line;
 import primitives.Point;
 import primitives.Segment;
 import primitives.Vector2D;
@@ -14,6 +13,7 @@ public class BoneSystem {
 	private ArrayList<Segment> segments;
 	private Bone2D rootBS;
 	private Stack<Bone2D> bonesStack;
+	private static int name = 1;
 	
 	public BoneSystem(Point root, ArrayList<Segment> segments){
 		this.segments = new ArrayList<>();
@@ -22,7 +22,8 @@ public class BoneSystem {
 		}
 		
 		bonesStack = new Stack<>();
-		rootBS = new Bone2D(root.getX(), root.getY(), 0, 0, null);
+		rootBS = new Bone2D(root.getX(), root.getY(), 0, 0, null, name);
+		name++;
 	}
 	
 	public void generateBoneSystem(){
@@ -74,7 +75,7 @@ public class BoneSystem {
 		
 		
 		//child
-		Bone2D child = new Bone2D(p.getX(), p.getY(), a, l, parent);
+		Bone2D child = new Bone2D(p.getX(), p.getY(), a, l, parent, name++);
 		bonesStack.add(child);
 		
 		//parent
@@ -89,7 +90,7 @@ public class BoneSystem {
 		
 		//System.out.println(" "+bone.getX()+" "+bone.getX()+" "+bone.getA()+" "+
 				//bone.getL());
-		System.out.println(" "+0+" "+0+" "+bone.getA()+" "+bone.getL()+" "+Math.toDegrees(bone.getA()));
+		System.out.println(" "+0+" "+0+" "+bone.getA()+" "+bone.getL()+" "+bone.getName());
 				
 		for(Bone2D child : bone.getChild()){
 			printBones(child, level+1);
