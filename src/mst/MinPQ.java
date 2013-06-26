@@ -1,23 +1,11 @@
 package mst;
 
-/*************************************************************************
- *  Compilation:  javac MinPQ.java
- *  Execution:    java MinPQ < input.txt
- *  
- *  Generic min priority queue implementation with a binary heap.
- *  Can be used with a comparator instead of the natural order.
- *
- *  % java MinPQ < tinyPQ.txt
- *  E A E (6 left on pq)
- *
- *  We use a one-based array to simplify parent and child calculations.
- *
- *************************************************************************/
 
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+@SuppressWarnings("unchecked")
 /**
  *  The <tt>MinPQ</tt> class represents a priority queue of generic keys.
  *  It supports the usual <em>insert</em> and <em>delete-the-minimum</em>
@@ -44,7 +32,8 @@ public class MinPQ<Key> implements Iterable<Key> {
    /**
      * Create an empty priority queue with the given initial capacity.
      */
-    public MinPQ(int initCapacity) {
+
+	public MinPQ(int initCapacity) {
         pq = (Key[]) new Object[initCapacity + 1];
         N = 0;
     }

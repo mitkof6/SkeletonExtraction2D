@@ -3,8 +3,6 @@ package primitives;
 /**
  * Represents a line by means of three coefficients
  * a, b and c, where ax + by + c = 0 holds.
- * 
- * @author Mikhail Dubov
  */
 public class Line {
        

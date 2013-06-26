@@ -1,4 +1,4 @@
-package main;
+package gui;
 
 
 import java.awt.Color;
@@ -6,8 +6,10 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import javax.swing.JPanel;
+
+import main.Main;
 import primitives.Point;
-import primitives.Vertex2D;
+import primitives.Vertex;
 import primitives.Segment;
 
 
@@ -22,7 +24,7 @@ public class ModelPanel extends JPanel{
 	 */
 	private static final long serialVersionUID = 1L;
 	
-    private ArrayList<Vertex2D> vertices;
+    private ArrayList<Vertex> vertices;
 	private ArrayList<Point> joints, root;
     private ArrayList<Segment> edges, bones;
     
@@ -69,7 +71,7 @@ public class ModelPanel extends JPanel{
     	
         //draw points
     	g2d.setColor(VERTEXC);
-    	for(Point p : vertices){
+    	for(Vertex p : vertices){
     		g2d.fillRect((int)p.getX(), 
         			(int)p.getY(), 3, 3);
     	}

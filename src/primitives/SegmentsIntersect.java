@@ -9,7 +9,6 @@ package primitives;
  * Determines whether the two given segments intersect in O(1),
  * as depicted in "Introduction to Algorithms" by T.Cormen et al.
  * 
- * @author Mikhail Dubov
  */
 public class SegmentsIntersect {
     

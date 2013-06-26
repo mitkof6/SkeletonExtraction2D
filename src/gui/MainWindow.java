@@ -1,4 +1,4 @@
-package main;
+package gui;
 
 
 import java.awt.BorderLayout;
@@ -17,28 +17,34 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 
+import main.Main;
+
+import exceptions.FileDialogException;
+import extract.Load2D;
+import extract.OpenFileDialog;
+
 import animation.Animation2D;
+import animation.BoneFunctions;
 
 /**
  *
- * @author STANEV
+ * @author Jim Stanev
  */
-public class Window extends JFrame{//
+public class MainWindow extends JFrame{
     
     /**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private static final int HEIGTH = 700, WIDTH = 700;
     
-    public Window(){
+    public MainWindow(){
         super("Model");
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setBounds(10, 10, WIDTH, HEIGTH);
+        this.setBounds(10, 10, Main.WIDTH, Main.HEIGTH);
         
         this.setLayout(new BorderLayout());
        
-        final JTextField pathTF = new JTextField("Model_2d_test.poly", 25);//Model_2d_test.poly
+        final JTextField pathTF = new JTextField("model/Model_2d_test.poly", 25);//Model_2d_test.poly
         //cube
         final JTextField zoomTF = new JTextField("2", 3);
         final JTextField stepTF = new JTextField("1", 3);
@@ -69,7 +75,6 @@ public class Window extends JFrame{//
 							JOptionPane.ERROR_MESSAGE);
 					e.printStackTrace();
 					return;
-					//TODO
 				}
 				panel.render();
 				repaint();
@@ -113,12 +118,53 @@ public class Window extends JFrame{//
 			public void actionPerformed(ActionEvent e) {
 				if(Main.skeleton==null) return;
 				Main.generateBoneSystem();
-				Animation2D animator = new Animation2D(Main.boneSystem.getRoot());
-				animator.setBounds(100, 20, WIDTH, HEIGTH);
+				Animation2D animator = new Animation2D();
+				animator.setBounds(100, 20, Main.WIDTH, Main.HEIGTH);
 				animator.setVisible(true);
+				Main.printKeyInfo();
 			}
 		});
         animationToolBar.add(animateB);
+        
+        JButton loadB = new JButton("Load Bone System");
+		loadB.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					System.out.println(Main.SEP);
+					OpenFileDialog fileHandler = new OpenFileDialog();
+					Main.root = BoneFunctions.loadBoneSystem(fileHandler.getFile());
+					System.out.println("Bone system loaded");
+					BoneFunctions.printBoneSystem(Main.root, 1);
+					System.out.println(Main.SEP);
+				} catch (FileDialogException | FileNotFoundException e) {
+					return;
+				}
+			}
+		});
+		animationToolBar.add(loadB);
+		
+		JButton loadSkin = new JButton("Load Model");
+		loadSkin.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					System.out.println(Main.SEP);
+					OpenFileDialog fileHandler = new OpenFileDialog();
+					Load2D loadSkin = new Load2D(fileHandler.getFile(), 1);
+					Main.vertices = loadSkin.getPolygon();
+					System.out.println("Model loaded");
+					System.out.println(Main.SEP);
+				} catch (FileDialogException | FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+		});
+		animationToolBar.add(loadSkin);
         
         this.add(panel, BorderLayout.CENTER);
         this.add(modelToolBar, BorderLayout.NORTH);

@@ -11,7 +11,7 @@ import primitives.Point;
 import primitives.Segment;
 import primitives.SegmentsIntersect;
 import primitives.Vector2D;
-import primitives.Vertex2D;
+import primitives.Vertex;
 
 
 /**
@@ -234,7 +234,7 @@ public class Skeleton2D {
 	 * @param edges the edges of the polygon
 	 * @return the new position of p
 	 */
-	private Point pushInside(Vertex2D p, ArrayList<Segment> edges){
+	private Point pushInside(Vertex p, ArrayList<Segment> edges){
 		
 		Vector2D n;
 		
@@ -244,8 +244,9 @@ public class Skeleton2D {
 		
 		//multiply by pushing factor
 		n.multiply(pushingFactor);
+		Vector2D temp = new Vector2D(p.getPosition());
 		
-		return Vector2D.add(new Vector2D(p), n).getPoint();
+		return Vector2D.add(temp, n).getPoint();
 	}
 	
 	
@@ -255,11 +256,11 @@ public class Skeleton2D {
 	 * @param vertices the vertexes of the polygon
 	 * @param edges the edges of the polygon
 	 */
-	public void getVDS(ArrayList<Vertex2D> vertices, ArrayList<Segment> edges){
+	public void getVDS(ArrayList<Vertex> vertices, ArrayList<Segment> edges){
 		
 		ArrayList<Point> points;
 		
-		for(Vertex2D v : vertices){
+		for(Vertex v : vertices){
 			//get points
 			points = localeMinimum(pushInside(v, edges), edges);
 			//cluster

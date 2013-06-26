@@ -2,8 +2,6 @@ package primitives;
 
 /**
  * Represents a point in two dimensional space.
- * 
- * @author Mikhail Dubov
  */
 public class Point {
     

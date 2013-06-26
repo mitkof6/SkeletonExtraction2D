@@ -13,16 +13,18 @@ import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLProfile;
 import javax.media.opengl.awt.GLCanvas;
-import javax.media.opengl.glu.GLU;
 
 import main.Main;
 
-import primitives.Bone2D;
-import primitives.Segment;
 
+import primitives.Point;
+import primitives.Vertex;
+import skeleton2D.Bone;
+
+
+import Jama.Matrix;
 
 import com.jogamp.opengl.util.FPSAnimator;
-
 
 
 public class Animation2D extends Frame implements GLEventListener, KeyListener{
@@ -32,62 +34,58 @@ public class Animation2D extends Frame implements GLEventListener, KeyListener{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private GLProfile glp;
-	private GLCapabilities caps;
 	private GLCanvas canvas;
 	private FPSAnimator animator;
-	private GLU glu;
 	private GL2 gl;
 
-	private Bone2D rootBS;
-	ArrayList<Segment> edges;
-	private boolean updateFlag = false;
-	private int DISTANCE = 1000, X = 0, Y = 0;
+	private Bone root;
+	private ArrayList<Vertex> skin;
+	private ArrayList<Point> skinPosition;
+	
+	private boolean animate = false, generateWeigths = false;
+	private int DISTANCE = 1000;
+	private int boneIndex = 1, keyFrameIndex = 0, FPS = 30, time; 
+	
 
-
-	public Animation2D(Bone2D rootBS){
+	public Animation2D(){
 
 		super("Animation");
-		this.setFocusable(true);
-		this.addKeyListener(this);
 
 		//closing
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				canvas.destroy();
 				animator.stop();
-				System.exit(0);
+				setVisible(false);
 			}
 		});
 
-		this.rootBS = rootBS;
-		this.edges = Main.edges;
-		System.out.println("Size: "+edges.size());
-		
-		X = (int)rootBS.getX();
-		Y = (int)rootBS.getY();
+		//data
+		this.root = Main.root;
+		this.skin = Main.vertices;
+		skinPosition = new ArrayList<>();
 		
 		//intialization
-		glp =  GLProfile.getDefault();
+		GLProfile glp =  GLProfile.getDefault();
 		GLProfile.initSingleton();
-		caps = new GLCapabilities(glp);
+		GLCapabilities caps = new GLCapabilities(glp);
 
 		//canvas
 		canvas = new GLCanvas(caps);
 		canvas.addGLEventListener(this);
-
-		//glu
-		glu = new GLU();
+		canvas.addKeyListener(this);
+		canvas.setFocusable(true);
 
 		//frame
 		this.add(canvas);
 
 		//animator
-		animator = new FPSAnimator(canvas, 60);
+		animator = new FPSAnimator(canvas, FPS);
 		animator.add(canvas);
 		animator.start();
 	}
 
+	
 	@Override
 	public void init(GLAutoDrawable drawable) {
 		gl = drawable.getGL().getGL2();
@@ -106,14 +104,11 @@ public class Animation2D extends Frame implements GLEventListener, KeyListener{
 		gl.glHint(GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL2.GL_NICEST);
 
 		//set camera
-		//setCamera(gl, glu);
-		gl.glViewport(X, Y, 1000, 1000);
+		gl.glViewport(0, 0, 1000, 1000);
 		gl.glMatrixMode(GL2.GL_PROJECTION);
 		gl.glOrtho(-DISTANCE, DISTANCE, -DISTANCE, DISTANCE, -1, 1);
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
 
-		//set light
-		setLight(gl);
 
 	}
 
@@ -125,7 +120,18 @@ public class Animation2D extends Frame implements GLEventListener, KeyListener{
 	@Override
 	public void display(GLAutoDrawable drawable) {
 		render(drawable);
-		//update();
+		if(generateWeigths==false){
+			generateWeigths = true;
+			BoneFunctions.initializeSkinBoneRelation(root, skin, Main.SKIN_DEPENDENCES);
+		}
+		if(animate){
+			BoneFunctions.animate(root, time);
+			time++;
+			if(time==root.getKeyFrame().size()*FPS){
+				time = 0;
+				BoneFunctions.initialPose(root);
+			}
+		}
 	}
 
 	@Override
@@ -146,62 +152,52 @@ public class Animation2D extends Frame implements GLEventListener, KeyListener{
 
 		gl.glLoadIdentity();
 
-		if(updateFlag==true){
-			updateFlag = false;
-			gl.glViewport(X, Y, 1000, 1000);
-		}
-		
-		gl.glTranslated(rootBS.getX(), rootBS.getY(), 0);
+		// draw bone
+		drawBone(root, gl);
 
+		updateSkin();
+		
+		//draw skin
 		drawSkin(gl);
 		
-		// draw
-		drawBone(rootBS, gl);
-
 		gl.glFlush();
-
 	}
 
-	private void drawSkin(GL2 gl){
-		gl.glPushMatrix();
-		
-		gl.glColor3d(0, 1, 0);
-		
-		for(Segment s: edges){
-			gl.glBegin(GL2.GL_LINE_LOOP);
-			gl.glVertex2d(s.getLeft().getX(), s.getLeft().getY());
-			gl.glVertex2d(s.getRight().getX(), s.getRight().getY());
-			gl.glEnd();
+	
+	private void updateSkin(){
+		skinPosition.clear();
+		for(Vertex v : skin){
+			double x = 0, y = 0;
+			Matrix result = null;
+			ArrayList<SkinBoneBinding> attached = v.getAttached();
+			for(int i = 0;i<attached.size();i++){
+				result = attached.get(i).getB().times(attached.get(i).getBone().getAbsoluteMatrix());
+				result = result.times(new Matrix(new double[]{0, 0 , 0, 1},1).transpose());
+				result = result.times(attached.get(i).getWeigth());
+				x += result.get(0, 0);
+				y += result.get(1, 0);
+				//System.out.println(Arrays.deepToString(result.getArray()));
+			}
+			
+			//System.out.println(Arrays.deepToString(result.getArray()));
+			skinPosition.add(new Point(x, y));
 		}
-		
-		gl.glPopMatrix();
 	}
-	private void drawBone(Bone2D bone, GL2 gl){
+	
+	private void drawBone(Bone bone, GL2 gl){
+		
 		gl.glPushMatrix();
-		
-		/*
-		gl.glBegin(GL2.GL_LINE_LOOP);
-		gl.glColor3f(1, 0, 0);
-		gl.glVertex2d(bone.getX(), bone.getY());
-		gl.glColor3f(0, 1, 0);
-		if(bone.getParent()!=null) gl.glVertex2d(bone.getParent().getX(),
-				bone.getParent().getY());
-		gl.glEnd();
-		*/
-		
+		double m[] = new double[16];
+	
 		if(bone.getParent()==null){
 			gl.glTranslated(bone.getX(), bone.getY(), 0);
-		}else{
-			gl.glTranslated(0, 0, 0);
 		}
-		
-
 		gl.glRotated(Math.toDegrees(bone.getA()), 0, 0, 1);
 		
-		
-		
 		gl.glColor3f(1, 0, 0);
-		
+		if(bone.getName()==boneIndex){
+			gl.glColor3f(0, 1, 0);
+		}
 		gl.glBegin(GL2.GL_LINE_LOOP);
 		
 		gl.glVertex2d(0, 0);
@@ -209,77 +205,70 @@ public class Animation2D extends Frame implements GLEventListener, KeyListener{
 		gl.glEnd();
 		gl.glTranslated(bone.getL(), 0, 0);
 		
-		for(Bone2D child : bone.getChild()){
+		gl.glGetDoublev(GL2.GL_MODELVIEW_MATRIX, m, 0);
+		
+		bone.setAbsoluteMatrix(m);
+		
+		for(Bone child : bone.getChild()){
 			drawBone(child, gl);
 		}
 
 		gl.glPopMatrix();
 	}
 
-	private void setCamera(GL2 gl, GLU glu) {
-		// Change to projection matrix.
-		gl.glMatrixMode(GL2.GL_PROJECTION);
-		gl.glLoadIdentity();
-
-		// Perspective.
-		float widthHeightRatio = (float) getWidth() / (float) getHeight();
-		glu.gluPerspective(90, widthHeightRatio, 1, 2000);
-		glu.gluLookAt(0, 0, DISTANCE, X, Y, 0, 0, 1, 0);
-
-
-		// Change back to model view matrix.
-		gl.glMatrixMode(GL2.GL_MODELVIEW);
-		gl.glLoadIdentity();
-	}
-
-	private void setLight(GL2 gl){
-		// Prepare light parameters.
-		float SHINE_ALL_DIRECTIONS = 1;
-		float[] lightPos = {0, 0, 150, SHINE_ALL_DIRECTIONS};
-		float[] lightColorAmbient = {0.2f, 0.2f, 0.2f, 1f};
-		float[] lightColorSpecular = {0.2f, 0.8f, 0.8f, 1f};
-
-		// Set light parameters.
-		gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_POSITION, lightPos, 0);
-		gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_AMBIENT, lightColorAmbient, 0);
-		gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_SPECULAR, lightColorSpecular, 0);
-
-		// Enable lighting in GL.
-		gl.glEnable(GL2.GL_LIGHT1);
-		gl.glEnable(GL2.GL_LIGHTING);
-
-		// Set material properties.
-		float[] rgba = {0.3f, 0.5f, 1f};
-		gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT, rgba, 0);
-		gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, rgba, 0);
-		gl.glMaterialf(GL2.GL_FRONT, GL2.GL_SHININESS, 0.5f);
+	private void drawSkin(GL2 gl){
+		gl.glPushMatrix();
+		
+		gl.glColor3f(0, 0, 1);
+		gl.glBegin(GL2.GL_LINE_LOOP);
+		for(Point p : skinPosition){
+			gl.glVertex2d(p.getX(), p.getY());
+		}
+		gl.glEnd();
+		
+		gl.glPopMatrix();
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		updateFlag = true;
+		
 		if(e.getKeyCode()==KeyEvent.VK_W){
-			Y = Y+10;
+			root.setY(root.getY()+10);
 		}else if(e.getKeyCode()==KeyEvent.VK_S){
-			Y = Y-10;
+			root.setY(root.getY()-10);
 		}else if(e.getKeyCode()==KeyEvent.VK_A){
-			X = X-10;
+			root.setX(root.getX()-10);
 		}else if(e.getKeyCode()==KeyEvent.VK_D){
-			X = X+10;
+			root.setX(root.getX()+10);
+		}else if(e.getKeyCode()==KeyEvent.VK_P){
+			boneIndex = boneIndex==0 ? 0 : --boneIndex;
+		}else if(e.getKeyCode()==KeyEvent.VK_N){
+			boneIndex = boneIndex==BoneFunctions.totalBones ? 0 : ++boneIndex;
+		}else if(e.getKeyCode()==KeyEvent.VK_LEFT){
+			Bone bone = BoneFunctions.findBoneByName(root, boneIndex);
+			if(bone!=null){
+				bone.setA(bone.getA()+0.1);
+			}
+		}else if(e.getKeyCode()==KeyEvent.VK_RIGHT){
+			Bone bone = BoneFunctions.findBoneByName(root, boneIndex);
+			if(bone!=null){
+				bone.setA(bone.getA()-0.1);
+			}
+		}else if(e.getKeyCode()==KeyEvent.VK_Q){
+			BoneFunctions.printKeyFrame(root, keyFrameIndex);
+			keyFrameIndex = keyFrameIndex + FPS;
+		}else if(e.getKeyCode()==KeyEvent.VK_R){
+			BoneFunctions.addKeyFrame(root, keyFrameIndex);
+			keyFrameIndex = keyFrameIndex + FPS;
+		}else if(e.getKeyCode()==KeyEvent.VK_E){//animate
+			time = 0;
+			animate = !animate;
 		}
-
 	}
 
 	@Override
-	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-
-	}
+	public void keyReleased(KeyEvent e) {}
 
 	@Override
-	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
+	public void keyTyped(KeyEvent e) {}
 }

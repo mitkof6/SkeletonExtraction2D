@@ -2,8 +2,6 @@ package primitives;
 
 /**
  * Represents a segment.
- * 
- * @author Mikhail Dubov
  */
 public class Segment {
     
