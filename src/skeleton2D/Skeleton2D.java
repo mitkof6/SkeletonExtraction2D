@@ -328,7 +328,7 @@ public class Skeleton2D {
 	}
 	
 	/**
-	 * Makes skeleton chain union using closes point algorithm
+	 * Makes skeleton chain union using minimum spanning tree
 	 * 
 	 */
 	private void skeletonChainUnion(){

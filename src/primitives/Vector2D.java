@@ -2,6 +2,11 @@ package primitives;
 
 import primitives.Point;
 
+/**
+ * 2D vector entity.
+ * 
+ * @author Jim Stanev
+ */
 public class Vector2D {
 
 	public double i;

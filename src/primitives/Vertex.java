@@ -4,10 +4,25 @@ import java.util.ArrayList;
 
 import animation.SkinBoneBinding;
 
+/**
+ * Represents a node of the skin of the model
+ * 
+ * @author Jim Stanev
+ *
+ */
 public class Vertex{
 
+	/**
+	 * n1, n2 the normal vectors of the neighbor edges
+	 */
 	private Vector2D n1, n2;
+	/**
+	 * the attached bones and there influence
+	 */
 	private ArrayList<SkinBoneBinding> attached = new ArrayList<>();
+	/**
+	 * the coordinates of the node
+	 */
 	private double x, y;
 	
 	public Vertex(double x, double y) {
@@ -58,7 +73,5 @@ public class Vertex{
 	public void addBoneSkinBinding(SkinBoneBinding binding){
 		this.attached.add(binding);
 	}
-	
-	
-	
+
 }

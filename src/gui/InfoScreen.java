@@ -25,10 +25,10 @@ public class InfoScreen extends JFrame{
 	public InfoScreen(){
 		super("Info Screen");
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		this.setBounds(700, 0, Main.WIDTH, Main.HEIGTH);
+		this.setBounds(700, 0, Main.WIDTH, Main.HEIGHT);
 		
 		//text area
-		JTextArea textArea = new JTextArea(50, 60);
+		JTextArea textArea = new JTextArea(40, 50);
 		textArea.setEditable(false);
 		textArea.setAutoscrolls(true);
 		

@@ -10,8 +10,6 @@ import primitives.Segment;
 import primitives.Vector2D;
 import primitives.Vertex;
 
-
-
 public class Load2D {
 	
 	private ArrayList<Vertex> vertices;
@@ -64,7 +62,12 @@ public class Load2D {
     	
     }
     
-  
+	/**
+	 * Generates the edges of the model from the points
+	 * 
+	 * @param points the nodes
+	 * @param edges the constructed edges (must be initialized)
+	 */
     private void generateEdges(ArrayList<Vertex> points, ArrayList<Segment> edges){
     	
     	for(int i = 0;i<points.size()-1;i++){
@@ -86,7 +89,7 @@ public class Load2D {
 	public ArrayList<Vertex> getPolygon() {
 		return polygon;
 	}
-	
+
 	public ArrayList<Segment> getEdges(){
 		return edges;
 	}

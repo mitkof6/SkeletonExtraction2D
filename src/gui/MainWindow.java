@@ -23,11 +23,12 @@ import exceptions.FileDialogException;
 import extract.Load2D;
 import extract.OpenFileDialog;
 
-import animation.Animation2D;
+import animation.Animator2D;
 import animation.BoneFunctions;
 
 /**
- *
+ * Main window class
+ * 
  * @author Jim Stanev
  */
 public class MainWindow extends JFrame{
@@ -40,7 +41,7 @@ public class MainWindow extends JFrame{
     public MainWindow(){
         super("Model");
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setBounds(10, 10, Main.WIDTH, Main.HEIGTH);
+        this.setBounds(10, 10, Main.WIDTH, Main.HEIGHT);
         
         this.setLayout(new BorderLayout());
        
@@ -118,8 +119,8 @@ public class MainWindow extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				if(Main.skeleton==null) return;
 				Main.generateBoneSystem();
-				Animation2D animator = new Animation2D();
-				animator.setBounds(100, 20, Main.WIDTH, Main.HEIGTH);
+				Animator2D animator = new Animator2D();
+				animator.setBounds(100, 20, Main.WIDTH, Main.HEIGHT);
 				animator.setVisible(true);
 				Main.printKeyInfo();
 			}

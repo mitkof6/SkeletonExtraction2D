@@ -14,7 +14,11 @@ import skeleton2D.Bone;
 import animation.SkinBoneBinding;
 import Jama.Matrix;
 
-
+/**
+ * Some static method used in the project
+ * 
+ * @author Jim Stanev
+ */
 public class BoneFunctions {
 
 	public static int totalBones;
@@ -24,6 +28,13 @@ public class BoneFunctions {
 	private static HashMap<Double, Bone> weightedBones;
 	
 	@SuppressWarnings("resource")
+	/**
+	 * This static method loads a bone system from a file
+	 * 
+	 * @param path to the file
+	 * @return the root of the bone system
+	 * @throws FileNotFoundException if can't open the file
+	 */
 	public static Bone loadBoneSystem(String path) throws FileNotFoundException{
 		
 		Scanner inputStream = null;
@@ -72,6 +83,13 @@ public class BoneFunctions {
 	}
 
 	@SuppressWarnings("resource")
+	/**
+	 * Loads key frames from file. Not used in this project
+	 * 
+	 * @param root the root to be attached
+	 * @param path file name
+	 * @throws FileNotFoundException if can't open the file
+	 */
 	public static void loadKeyFrames(Bone root, String path)
 			throws FileNotFoundException{
 		
@@ -98,6 +116,13 @@ public class BoneFunctions {
 		}
 	}
 	
+	/**
+	 * Finds a bone by its name
+	 * 
+	 * @param root the root of the bone system
+	 * @param name the name of the bone to find
+	 * @return the bone if found else null
+	 */
 	public static Bone findBoneByName(Bone root, int name){
 		
 		if(root==null) return null;
@@ -113,6 +138,12 @@ public class BoneFunctions {
 		return null;
 	}
 	
+	/**
+	 * Prints the bone system in a readable and saveable format
+	 * 
+	 * @param bone the bone to be printed (give root to start)
+	 * @param level the level of the bone (give 1 to start)
+	 */
 	public static void printBoneSystem(Bone bone, int level){
 		
 		if(bone==null) return;
@@ -121,41 +152,59 @@ public class BoneFunctions {
 			System.out.print("#");
 		}
 		
-		System.out.println(" "+bone.getX()+" "+bone.getY()+" "+bone.getA()+
-				" "+bone.getL()+" "+bone.getName());
+		System.out.println(" "+bone.getX()+" "+bone.getY()+" "+bone.getAngle()+
+				" "+bone.getLength()+" "+bone.getName());
 		
 		for(int i = 0;i<bone.getChild().size();i++){
 			printBoneSystem(bone.getChild().get(i), level+1);
 		}
 	}
 	
+	/**
+	 * Prints a key frame
+	 * 
+	 * @param bone the bone (give root to start)
+	 * @param time the time (give 0 to start)
+	 */
 	public static void printKeyFrame(Bone bone, int time){
 		
 		if(bone==null) return;
 		
-		System.out.println(time+" "+bone.getX()+" "+bone.getY()+" "+bone.getA()+
-				" "+bone.getL()+" "+bone.getName());
+		System.out.println(time+" "+bone.getX()+" "+bone.getY()+" "+bone.getAngle()+
+				" "+bone.getLength()+" "+bone.getName());
 		
 		for(int i = 0;i<bone.getChild().size();i++){
 			printKeyFrame(bone.getChild().get(i), time);
 		}
 	}
 	
+	/**
+	 * Adds key frame to bone system
+	 * 
+	 * @param bone give root to start
+	 * @param time give the current time index
+	 */
 	public static void addKeyFrame(Bone bone, int time){
 		
 		if(bone==null) return;
 		
-		System.out.println("Bone: "+bone.getName()+" time: "+time+" angle: "+bone.getA());
+		System.out.println("Bone: "+bone.getName()+" time: "+time+" angle: "+bone.getAngle());
 		
 		bone.addKeyFrames(new KeyFrame(time, bone.getX(), bone.getY(),
-				bone.getA(), bone.getL()));
+				bone.getAngle(), bone.getLength()));
 		
 		for(int i = 0;i<bone.getChild().size();i++){
 			addKeyFrame(bone.getChild().get(i), time);
 		}
 	}
 	
-	public static void animate(Bone bone, int time){
+	/**
+	 * Used to find the angle of the bones between key frames
+	 * 
+	 * @param bone the bone 
+	 * @param time the time
+	 */
+	public static void interpolate(Bone bone, int time){
 		
 		if(bone==null) return;
 		
@@ -166,32 +215,33 @@ public class BoneFunctions {
 				if(i!=bone.getKeyFrame().size()-1){
 					tim = bone.getKeyFrame().get(i+1).getTime()-
 							bone.getKeyFrame().get(i).getTime();
-					angle = bone.getKeyFrame().get(i+1).getA()-
-							bone.getKeyFrame().get(i).getA();
-					length = bone.getKeyFrame().get(i+1).getL()-
-							bone.getKeyFrame().get(i).getL();
+					angle = bone.getKeyFrame().get(i+1).getAngle()-
+							bone.getKeyFrame().get(i).getAngle();
+					length = bone.getKeyFrame().get(i+1).getLength()-
+							bone.getKeyFrame().get(i).getLength();
 					
-					bone.setAngleOffst(angle/tim);
+					bone.setAngleOffset(angle/tim);
 					bone.setLengthOffset(length/tim);
 				}else{
-					bone.setAngleOffst(0);
+					bone.setAngleOffset(0);
 					bone.setLengthOffset(0);
 				}
 			}
 		}
 		
-		bone.setA(bone.getA()+bone.getAngleOffst());
-		bone.setL(bone.getL()+bone.getLengthOffset());
+		bone.setAngle(bone.getAngle()+bone.getAngleOffset());
+		bone.setLength(bone.getLength()+bone.getLengthOffset());
 		
 		for(int i = 0;i<bone.getChild().size();i++){
-			animate(bone.getChild().get(i), time);
+			interpolate(bone.getChild().get(i), time);
 		}
 	}
 
 	/**
 	 * Initializes the skin-bone relation
 	 * 
-	 * @param mesh the mesh object
+	 * @param root root of the bone system
+	 * @param skin the skin
 	 * @param dependencies the maximum number of attached bones to a node in the skin
 	 */
 	public static void initializeSkinBoneRelation(Bone root, ArrayList<Vertex> skin, int dependencies){
@@ -227,7 +277,12 @@ public class BoneFunctions {
 		}
 	}
 	
-	
+	/**
+	 * Not used in this project
+	 * 
+	 * @param root
+	 * @param skin
+	 */
 	public static void generateWeights(Bone root, ArrayList<Vertex> skin){
 		
 		ArrayList<Bone> bones = new ArrayList<>();
@@ -303,7 +358,12 @@ public class BoneFunctions {
 		*/
 	}
 	
-	
+	/**
+	 * Used to get an array list of bone form a tree structure
+	 * 
+	 * @param root give root to start
+	 * @param bones the return list
+	 */
 	private static void getBones(Bone root, ArrayList<Bone> bones){
 		bones.add(root);
 		for(int i = 0;i<root.getChild().size();i++){
@@ -312,11 +372,18 @@ public class BoneFunctions {
 		}
 	}
 	
-	private static Matrix getBindingMatrix(Vertex v, Bone b){
+	/**
+	 * Calculates the binding matrix
+	 * 
+	 * @param vertex the vertex position
+	 * @param bone the bone
+	 * @return the binding matrix
+	 */
+	private static Matrix getBindingMatrix(Vertex vertex, Bone bone){
 
 		double thi = 0;
-		double dx = v.getX() - b.getAbsolutePosition().getX();
-		double dy = v.getY() - b.getAbsolutePosition().getY();
+		double dx = vertex.getX() - bone.getAbsolutePosition().getX();
+		double dy = vertex.getY() - bone.getAbsolutePosition().getY();
 		//System.out.println("Thi: "+Math.toDegrees(thi));
 		double[][] array = {{Math.cos(thi), Math.sin(thi), 0, dx},
 							{-Math.sin(thi), Math.cos(thi), 0, dy},
@@ -328,6 +395,11 @@ public class BoneFunctions {
 		return new Matrix(array);
 	}
 	
+	/**
+	 * Resets bone initial position
+	 * 
+	 * @param bone give root to start
+	 */
 	public static void initialPose(Bone bone){
 		bone.setInitialAngle();
 		

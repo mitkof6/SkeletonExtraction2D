@@ -16,21 +16,43 @@ import skeleton2D.Skeleton2D;
 
 
 /**
- *
- * @author STANEV
+ * This is the main class
+ * 
+ * @author Jim Stanev
  */
 public class Main {
 	
+	/**
+	 * skeleton instance for the skeleton extraction algorithm
+	 */
 	public static Skeleton2D skeleton;
+	/**
+	 * bone system instance for generation of hierarchy tree system
+	 */
 	private static BoneSystem boneSystem;
+	/**
+	 * the vertices of the model
+	 */
 	public static ArrayList<Vertex> vertices;
+	/**
+	 * the edges of the model
+	 */
 	public static ArrayList<Segment> edges;
+	/**
+	 * the root of the bone system
+	 */
     public static Bone root;
-    
-    public static final int HEIGTH = 700, WIDTH = 700;
-    
+    /**
+     * windows global height and width
+     */
+    public static final int HEIGHT = 700, WIDTH = 700;
+    /**
+     * skin attachment index
+     */
     public static int SKIN_DEPENDENCES = 2;
-    
+    /**
+     * printing pattern
+     */
     public static final String SEP = "############################";
 	
 	    
@@ -48,9 +70,23 @@ public class Main {
 
     }
 
+    /**
+     * Generates the skeleton of a model
+     * 
+     * @param path path to file
+     * @param zoom multiplies coordinates by zoom
+     * @param step the step of convergence toward local minimum
+     * @param sampling rerify of the skeleton
+     * @param pushingFactor initial pushing toward inner S
+     * @param iteration the number of iteration threshold
+     * @param distanceTolerance for merging nodes
+     * @param rootTolerance for merging final nodes
+     * @throws FileNotFoundException if can't open the file
+     */
     public static void generateSceleton(String path, int zoom, double step, int sampling,
     		int pushingFactor, int iteration, int distanceTolerance, int rootTolerance)
     				throws FileNotFoundException{
+    	
     	System.out.println(SEP);
     	//load model
 		Load2D loader = new Load2D(path, zoom);
@@ -66,6 +102,10 @@ public class Main {
         System.out.println(SEP);
     }
     
+    /**
+     * Generates the hierarchy bone system. If bones are not connected it may be
+     * stuck in inf loop
+     */
     public static void generateBoneSystem(){
     	System.out.println(SEP);
     	System.out.println("Generate bone system");
@@ -77,6 +117,9 @@ public class Main {
     
     }
     
+    /**
+     * Prints animation controls
+     */
     public static void printKeyInfo(){
     	System.out.println(SEP);
     	System.out.println("W S A D: movements");

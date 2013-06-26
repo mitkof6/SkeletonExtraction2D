@@ -14,8 +14,10 @@ import primitives.Segment;
 
 
 /**
- *
- * @author STANEV
+ * This panel is responsible to draw and view the model using
+ * java graphics
+ * 
+ * @author Jim Stanev
  */
 public class ModelPanel extends JPanel{
     
@@ -35,11 +37,11 @@ public class ModelPanel extends JPanel{
     	EDGEC = Color.MAGENTA, JOINTC = Color.BLUE;	
     
     /**
-     * Constructor, initialize variables and run the algorithms..
+     * Constructor, initialize variables and run the algorithms.
      * 
      */
     public ModelPanel(){
-        //init
+
         edges = new ArrayList<>();
         vertices = new ArrayList<>();
        
@@ -106,5 +108,4 @@ public class ModelPanel extends JPanel{
         			(int)r.getRight().getX(), (int)r.getRight().getY());
         }
     }   
-
 }

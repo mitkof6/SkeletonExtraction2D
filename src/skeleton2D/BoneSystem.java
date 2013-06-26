@@ -7,26 +7,41 @@ import primitives.Point;
 import primitives.Segment;
 import primitives.Vector2D;
 
+/**
+ * This class generate the hierarchy bone system
+ * 
+ * @author Jim Stanev
+ */
 public class BoneSystem {
 
 	private ArrayList<Segment> segments;
-	private Bone rootBS;
+	private Bone root;
 	private Stack<Bone> bonesStack;
 	private static int name = 1;
 	
-	public BoneSystem(Point root, ArrayList<Segment> segments){
+	/**
+	 * Constructor
+	 * 
+	 * @param root the root point
+	 * @param bones an array list of the bone segments
+	 */
+	public BoneSystem(Point root, ArrayList<Segment> bones){
 		this.segments = new ArrayList<>();
-		for(Segment s: segments){
+		for(Segment s: bones){
 			this.segments.add(new Segment(s.getLeft(), s.getRight()));
 		}
 		
 		bonesStack = new Stack<>();
-		rootBS = new Bone(root.getX(), root.getY(), 0, 0, name, null);
+		this.root = new Bone(root.getX(), root.getY(), 0, 0, name, null);
 		name++;
 	}
 	
+	/**
+	 * Generates the tree system. If the bones are not connected correct
+	 * it may stuck in inf loop
+	 */
 	public void generateBoneSystem(){
-		Bone current = rootBS;
+		Bone current = root;
 		Stack<Segment> toRemove = new Stack<>();
 		while(segments.size()!=0){
 			for(Segment s : segments){
@@ -47,6 +62,12 @@ public class BoneSystem {
 		
 	}
 	
+	/**
+	 * Makes a bone and calculates its relative parameters
+	 * 
+	 * @param parent the parent
+	 * @param p the initial point
+	 */
 	private void makeBone(Bone parent, Point p){
 		double a;
 		double l;
@@ -81,7 +102,12 @@ public class BoneSystem {
 
 	}
 
+	/**
+	 * Gets the root of the bone system
+	 * 
+	 * @return the root
+	 */
 	public Bone getRoot(){
-		return this.rootBS;
+		return this.root;
 	}
 }

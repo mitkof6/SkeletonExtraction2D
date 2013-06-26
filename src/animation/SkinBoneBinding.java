@@ -3,41 +3,41 @@ package animation;
 import skeleton2D.Bone;
 import Jama.Matrix;
 
+/**
+ * Represents a bone skin binding
+ * 
+ * @author Jim Stanev
+ */
 public class SkinBoneBinding {
 	
-	private Matrix b;
-	private double weigth;
+	private Matrix bindingMatrix;
+	private double weight;
 	private Bone bone;
 	
-	public SkinBoneBinding(Matrix b, double weigth, Bone bone){
-		this.b = b;
-		this.weigth = weigth;
+	/**
+	 * Constructor
+	 * 
+	 * @param bindingMatrix the binding matrix
+	 * @param weight the weight of the binding
+	 * @param bone the attached bone
+	 */
+	public SkinBoneBinding(Matrix bindingMatrix, double weight, Bone bone){
+		this.bindingMatrix = bindingMatrix;
+		this.weight = weight;
 		this.bone = bone;
 	}
 
-	public Matrix getB() {
-		return b;
+	public Matrix getBindingMatrix() {
+		return bindingMatrix;
 	}
 
-	public void setB(Matrix b) {
-		this.b = b;
-	}
 
 	public double getWeigth() {
-		return weigth;
-	}
-
-	public void setWeigth(double weigth) {
-		this.weigth = weigth;
+		return weight;
 	}
 
 	public Bone getBone() {
 		return bone;
 	}
 
-	public void setBone(Bone bone) {
-		this.bone = bone;
-	}
-	
-	
 }

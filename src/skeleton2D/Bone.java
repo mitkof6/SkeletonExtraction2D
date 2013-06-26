@@ -8,28 +8,29 @@ import animation.KeyFrame;
 
 import Jama.Matrix;
 
-
+/**
+ * This class represents a bone and its relation to the parent bone
+ * 
+ * @author Jim Stanev
+ */
 public class Bone {
 	
-	private double x, y, a, l, initAngle;
-	private double angleOffst, lengthOffset;
+	private double x, y, angle, length, initialAngle;
+	private double angleOffset, lengthOffset;
 	private int name;
-	private ArrayList<Bone> child;
+	private ArrayList<Bone> child = new ArrayList<>();
 	private Bone parent;
-	private ArrayList<KeyFrame> keyFrames;
+	private ArrayList<KeyFrame> keyFrames = new ArrayList<>();
 	private Matrix ablolute;
 	
-	public Bone(double x, double y, double a, double l, int name, Bone parent){
+	public Bone(double x, double y, double angle, double length, int name, Bone parent){
 		this.x = x;
 		this.y = y;
-		this.a = a;
-		this.initAngle = a;
-		this.l = l;
+		this.angle = angle;
+		this.initialAngle = angle;
+		this.length = length;
 		this.name = name;
 		this.parent = parent;
-		
-		child = new ArrayList<>();
-		keyFrames = new ArrayList<>();
 	}
 	
 	public void addChild(Bone child){
@@ -52,12 +53,12 @@ public class Bone {
 		this.y = y;
 	}
 
-	public void setA(double a) {
-		this.a = a;
+	public void setAngle(double a) {
+		this.angle = a;
 	}
 
-	public void setL(double l) {
-		this.l = l;
+	public void setLength(double l) {
+		this.length = l;
 	}
 
 	public void setName(int name) {
@@ -84,12 +85,12 @@ public class Bone {
 		return y;
 	}
 
-	public double getA() {
-		return a;
+	public double getAngle() {
+		return angle;
 	}
 
-	public double getL() {
-		return l;
+	public double getLength() {
+		return length;
 	}
 
 	public int getName(){
@@ -97,7 +98,7 @@ public class Bone {
 	}
 	
 	public void setInitialAngle(){
-		this.a = initAngle;
+		this.angle = initialAngle;
 	}
 	
 	public ArrayList<Bone> getChild() {
@@ -108,12 +109,12 @@ public class Bone {
 		return parent;
 	}
 
-	public double getAngleOffst() {
-		return angleOffst;
+	public double getAngleOffset() {
+		return angleOffset;
 	}
 
-	public void setAngleOffst(double angleOffst) {
-		this.angleOffst = angleOffst;
+	public void setAngleOffset(double angleOffst) {
+		this.angleOffset = angleOffst;
 	}
 
 	public double getLengthOffset() {

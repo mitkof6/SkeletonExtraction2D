@@ -1,16 +1,30 @@
 package animation;
 
+/**
+ * Represents a key frame entity
+ * 
+ * @author Jim Stanev
+ */
 public class KeyFrame {
 
-	private double x, y, a, l;
+	private double x, y, angle, length;
 	private int time;
 	
-	public KeyFrame(int time, double x, double y, double a, double l){
+	/**
+	 * Constructor
+	 * 
+	 * @param time the time
+	 * @param x coordinate
+	 * @param y coordinate
+	 * @param angle the angle in this key frame
+	 * @param length the length in this key frame
+	 */
+	public KeyFrame(int time, double x, double y, double angle, double length){
 		this.time = time;
 		this.x = x;
 		this.y = y;
-		this.a = a;
-		this.l = l;
+		this.angle = angle;
+		this.length = length;
 	}
 
 	public double getX() {
@@ -29,20 +43,20 @@ public class KeyFrame {
 		this.y = y;
 	}
 
-	public double getA() {
-		return a;
+	public double getAngle() {
+		return angle;
 	}
 
-	public void setA(double a) {
-		this.a = a;
+	public void setAngle(double a) {
+		this.angle = a;
 	}
 
-	public double getL() {
-		return l;
+	public double getLength() {
+		return length;
 	}
 
-	public void setL(double l) {
-		this.l = l;
+	public void setLength(double l) {
+		this.length = l;
 	}
 
 	public int getTime() {
@@ -52,6 +66,4 @@ public class KeyFrame {
 	public void setTime(int time) {
 		this.time = time;
 	}
-	
-	
 }
