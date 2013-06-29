@@ -70,6 +70,7 @@ public class MainWindow extends JFrame{
 							Integer.parseInt(iterationTF.getText()),
 							Integer.parseInt(distanceTTF.getText()), 
 							Integer.parseInt(rootTTF.getText()));
+					Main.generateBoneSystem();
 				} catch (NumberFormatException | FileNotFoundException e) {
 					@SuppressWarnings("unused")
 					JOptionPane pane = new JOptionPane("Can't open file",
@@ -117,8 +118,9 @@ public class MainWindow extends JFrame{
         animateB.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(Main.skeleton==null) return;
-				Main.generateBoneSystem();
+				if(Main.root==null) return;
+				Main.SKIN_DEPENDENCES = 
+					Integer.parseInt(JOptionPane.showInputDialog(null, "Skin Dependencies?", "2"));
 				Animator2D animator = new Animator2D();
 				animator.setBounds(100, 20, Main.WIDTH, Main.HEIGHT);
 				animator.setVisible(true);

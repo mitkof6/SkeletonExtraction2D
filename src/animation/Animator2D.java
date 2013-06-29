@@ -228,6 +228,10 @@ public class Animator2D extends Frame implements GLEventListener, KeyListener{
 		gl.glGetDoublev(GL2.GL_MODELVIEW_MATRIX, m, 0);
 		
 		bone.setAbsoluteMatrix(m);
+		if(weightsInitialized==false){
+			bone.setX(m[12]);
+			bone.setY(m[13]);
+		}
 		
 		for(Bone child : bone.getChild()){
 			drawBone(child, gl);

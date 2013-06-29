@@ -248,11 +248,11 @@ public class BoneFunctions {
 		
 		ArrayList<Bone> bones = new ArrayList<>();
 		getBones(root, bones);
-		
+		System.out.println("Bones: "+bones.size());
 
 		for(Vertex v: skin){
 			
-			weightedBones = new HashMap<>();
+			weightedBones = new HashMap<Double, Bone>();
 			
 			for(int i = 0;i<bones.size();i++){
 				double dist = bones.get(i).getInitialPosition().dist(v.getPosition());
@@ -261,12 +261,12 @@ public class BoneFunctions {
 			
 			List<Double> distance = new ArrayList<Double>(weightedBones.keySet());
 			Collections.sort(distance);
-			
+
 			for(int i = 0;i<dependencies;i++){
 				Bone b = weightedBones.get(distance.get(i));
 				if(distance.get(i)==0){
 					v.addBoneSkinBinding(new SkinBoneBinding(
-									getBindingMatrix(v, b), 1.0/dependencies, b));
+									getBindingMatrix(v, b), 1.0, b));
 					break;
 				}else{
 					v.addBoneSkinBinding(new SkinBoneBinding(
